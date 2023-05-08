@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+This Post Title
+{% endblock  %}
+
+{% block css_files %}
+<link rel="stylesheet" href="{% static 'blog/post-detail.css' %}"/>
+{% endblock  %}
+
+{% block content %}
+<section id="summary">
+    <h2>Post Title</h2>
+    <article>
+        <img src="{% static 'blog/images/mountains.jpg' %}" alt="Post Title"/>
+        <address>By Zaryab</address>
+        <div>
+            Last updated on <time>Jul 10th</time>
+        </div>
+    </article>
+</section>
+
+<main>
+    <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut volutpat velit. Morbi luctus ultrices sodales. Integer pulvinar ligula et erat ultrices, non placerat eros condimentum. Proin sagittis interdum justo, sit amet lacinia odio consequat sed. Aenean malesuada libero vitae efficitur tristique. Etiam dictum laoreet lorem, id faucibus felis bibendum id. Aenean tincidunt eros sem, nec vulputate eros porttitor fringilla. Phasellus justo mauris, porttitor in metus eget, hendrerit aliquam justo.  
+    </p>
+    <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut volutpat velit. Morbi luctus ultrices sodales. Integer pulvinar ligula et erat ultrices, non placerat eros condimentum. Proin sagittis interdum justo, sit amet lacinia odio consequat sed. Aenean malesuada libero vitae efficitur tristique. Etiam dictum laoreet lorem, id faucibus felis bibendum id. Aenean tincidunt eros sem, nec vulputate eros porttitor fringilla. Phasellus justo mauris, porttitor in metus eget, hendrerit aliquam justo.  
+    </p>
+</main>
+{% endblock %}
