@@ -49,8 +49,16 @@ def index(request):
 
 
 def posts(request):
-    return render(request, "blog/all-posts.html")
+    return render(request, "blog/all-posts.html", {
+        "all_posts": all_posts
+    })
 
 
 def post(request, slug):
-    return render(request, "blog/post-detail.html")
+
+    # using the next function >> finds the next element that matches the condition
+    identified_post = next(post for post in all_posts if post['slug'] == slug)
+
+    return render(request, "blog/post-detail.html", {
+        "post": identified_post
+    })
