@@ -26,7 +26,7 @@ class Author(models.Model):
 
 
 class Blog(models.Model):
-    image = models.CharField(max_length=50)
+    image = models.ImageField(upload_to="posts", null=True)
     date = models.DateField(auto_now=True)
     title = models.CharField(max_length=50)
     excerpt = models.CharField(max_length=200)
