@@ -1,7 +1,11 @@
+from typing import Any, Dict
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.shortcuts import render
 from datetime import date
+from django.views.generic import ListView, DetailView
+from django.views.generic.base import View, TemplateView
+
 
 # Importing data from models
 from .models import Blog
@@ -50,33 +54,34 @@ def post(request, slug):
     })
 
 
-######################## DUMMY DATA #######################
-#  all_posts = [
-#     {
-#         "slug": "hike-in-the-mountains",
-#         "image": "mountains.jpg",
-#         "author": "Zaryab Ahmed",
-#         "date": date(2021, 7, 21),
-#         "title": "Mountain Hiking",
-#         "excerpt": "There's nothin like the views you get when hiking in the mountains! And I was't even prepared for what happened whilst I was enjoying the view!",
-#         "content": """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut volutpat velit. Morbi luctus ultrices sodales. Integer pulvinar ligula et erat ultrices, non placerat eros condimentum. Proin sagittis interdum justo, sit amet lacinia odio consequat sed. Aenean malesuada libero vitae efficitur tristique. Etiam dictum laoreet lorem, id faucibus felis bibendum id. Aenean tincidunt eros sem, nec vulputate eros porttitor fringilla. Phasellus justo mauris, porttitor in metus eget, hendrerit aliquam justo.
+############# SWTICHING TO CLASS BASED VIEWS ###############
+class StartingPageView(ListView):
+    template_name = "blog/index.html"
+    model = Blog
+    ordering = ["-date"]
+    context_object_name = "posts"
 
-#         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut volutpat velit. Morbi luctus ultrices sodales. Integer pulvinar ligula et erat ultrices, non placerat eros condimentum. Proin sagittis interdum justo, sit amet lacinia odio consequat sed. Aenean malesuada libero vitae efficitur tristique. Etiam dictum laoreet lorem, id faucibus felis bibendum id. Aenean tincidunt eros sem, nec vulputate eros porttitor fringilla. Phasellus justo mauris, porttitor in metus eget, hendrerit aliquam justo.
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        data = queryset[:3]
+        return data
 
-#         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut volutpat velit. Morbi luctus ultrices sodales. Integer pulvinar ligula et erat ultrices, non placerat eros condimentum. Proin sagittis interdum justo, sit amet lacinia odio consequat sed. Aenean malesuada libero vitae efficitur tristique. Etiam dictum laoreet lorem, id faucibus felis bibendum id. Aenean tincidunt eros sem, nec vulputate eros porttitor fringilla. Phasellus justo mauris, porttitor in metus eget, hendrerit aliquam justo."""
-#     },
 
-#     {
-#         "slug": "nature-is-the-best",
-#         "image": "mountains.jpg",
-#         "author": "Zaryab Ahmed",
-#         "date": date(2021, 7, 21),
-#         "title": "Nature At Its Best",
-#         "excerpt": "There's nothin like the views you get when hiking in the mountains! And I was't even prepared for what happened whilst I was enjoying the view!",
-#         "content": """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut volutpat velit. Morbi luctus ultrices sodales. Integer pulvinar ligula et erat ultrices, non placerat eros condimentum. Proin sagittis interdum justo, sit amet lacinia odio consequat sed. Aenean malesuada libero vitae efficitur tristique. Etiam dictum laoreet lorem, id faucibus felis bibendum id. Aenean tincidunt eros sem, nec vulputate eros porttitor fringilla. Phasellus justo mauris, porttitor in metus eget, hendrerit aliquam justo.
+class AllPostView(ListView):
+    # model = Blog
+    # >> We can also use if we use model = Blog
+    # ordering = ["-date"]
+    queryset = Blog.objects.order_by("-date")
+    template_name = "blog/all-posts.html"
+    context_object_name = "all_posts"
 
-#         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut volutpat velit. Morbi luctus ultrices sodales. Integer pulvinar ligula et erat ultrices, non placerat eros condimentum. Proin sagittis interdum justo, sit amet lacinia odio consequat sed. Aenean malesuada libero vitae efficitur tristique. Etiam dictum laoreet lorem, id faucibus felis bibendum id. Aenean tincidunt eros sem, nec vulputate eros porttitor fringilla. Phasellus justo mauris, porttitor in metus eget, hendrerit aliquam justo.
 
-#         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut volutpat velit. Morbi luctus ultrices sodales. Integer pulvinar ligula et erat ultrices, non placerat eros condimentum. Proin sagittis interdum justo, sit amet lacinia odio consequat sed. Aenean malesuada libero vitae efficitur tristique. Etiam dictum laoreet lorem, id faucibus felis bibendum id. Aenean tincidunt eros sem, nec vulputate eros porttitor fringilla. Phasellus justo mauris, porttitor in metus eget, hendrerit aliquam justo."""
-#     }
-# ]
+class PostDetailView(DetailView):
+    model = Blog
+    template_name = "blog/post-detail.html"
+    context_object_name = "post"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["post_tags"] = self.object.tags.all()
+        return context
