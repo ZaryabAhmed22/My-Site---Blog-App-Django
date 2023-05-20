@@ -45,3 +45,11 @@ class Blog(models.Model):
 
         # Doing this so that our built in django save method is called with any other arguments passed in the overwriting of save method
         super().save(*args, **kwargs)
+
+
+class Comment(models.Model):
+    user_name = models.CharField(max_length=50)
+    user_email = models.EmailField(max_length=254)
+    text = models.TextField(max_length=400)
+    post = models.ForeignKey(Blog,
+                             on_delete=models.CASCADE, related_name="comments")
