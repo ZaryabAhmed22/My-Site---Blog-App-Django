@@ -21,9 +21,22 @@ This Post Title
 
 <section id="summary">
     <h2>{{post.title}}</h2>
+
+    <div>
     {% for tag in post_tags %}
-    <span class="tag">{{tag.name}}</span>
+        <span class="tag">{{tag.name}}</span>
     {% endfor %}
+    </div>
+
+    {% comment %} Sessions {% endcomment %}
+    <div id="read-later">
+        <form action="{% url 'read-later' %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" value="{{post.id}}" name="post_id">
+            <button>Read Later</button>
+        </form>
+    </div>
+
     <article>
         <img src="{{post.image.url}}" alt={{post.title}}/>
         <address>By <a href="mailto:{{post.author.email}}">{{post.author|title}}</a></address>
