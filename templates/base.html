@@ -15,6 +15,7 @@
         <h1><a href="{% url 'index' %}">ZAK Blog</a></h1>
         <nav>
             <a href="{% url 'posts' %}">All Posts</a>
+            <a href="{% url 'read-later' %}">Stored Posts</a>
         </nav>
     </header>
     {% block content %}{% endblock %}

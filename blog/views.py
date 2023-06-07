@@ -134,5 +134,38 @@ class PostDetailView(View):
 
 
 class ReadLaterView(View):
+    def get(self, request):
+        # Getting the sessions
+        stored_posts = request.session.get("stored_posts")
+
+        # Creating an empty dictionary for the context that will be passed to the template
+        context = {}
+
+        # Checking if there are any posts ids stored as session, if not then context will have no posts. If there are some post ids in the session, then we will retrieve those Blog objects whom ids are in the session dictionary "stored_posts". The id__in means that we have attaches an "__in" modifier with the id which checks in the partical dictionary
+        if stored_posts is None or len(stored_posts) == 0:
+            context["posts"] = []
+            context["has_posts"] = False
+        else:
+            context["posts"] = Blog.objects.filter(id__in=stored_posts)
+            context["has_posts"] = True
+
+        return render(request, "blog/stored-posts.html", context)
+
     def post(self, request):
-        pass
+        # Getting the sessions
+        stored_posts = request.session.get("stored_posts")
+
+        # Creating an empty list if there are no sessions
+        if stored_posts is None:
+            stored_posts = []
+
+        # Getting the data from the hidden input field
+        post_id = int(request.POST["post_id"])
+
+        # Appending the post_id in stored posts and then saving the stored_posts list ot the sessions
+        if post_id not in stored_posts:
+            stored_posts.append(post_id)
+            request.session["stored_posts"] = stored_posts
+
+        # Redirecting to home page
+        return HttpResponseRedirect("/")
