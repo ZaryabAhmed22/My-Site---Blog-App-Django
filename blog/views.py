@@ -1,10 +1,12 @@
 from typing import Any, Dict
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotAllowed
+from django.urls import reverse
 from django.shortcuts import render
 from datetime import date
 from django.views.generic import ListView, DetailView
-from django.views.generic.base import View, TemplateView
+from django.views.generic.base import TemplateView
+from django.views import View
 from .forms import CommentForm
 
 
@@ -77,7 +79,7 @@ class AllPostView(ListView):
     context_object_name = "all_posts"
 
 
-class PostDetailView(DetailView):
+class PostDetailDetailView(DetailView):
     model = Blog
     template_name = "blog/post-detail.html"
     context_object_name = "post"
@@ -89,3 +91,41 @@ class PostDetailView(DetailView):
         context["comment_form"] = comment_form
 
         return context
+
+
+class PostDetailView(View):
+    def get(self, request, slug):
+        post = Blog.objects.get(slug=slug)
+        context = {
+            "post": post,
+            "post_tags": post.tags.all(),
+            "comment_form": CommentForm()
+        }
+        return render(request, "blog/post-detail.html", context)
+
+    def post(self, request, slug):
+        comment_form = CommentForm(request.POST)
+        rendered_post = Blog.objects.get(slug=slug)
+
+        if comment_form.is_valid():
+            # >> IMPORTANT: Since now we are not using DetailVIew and saving the data manually, we are unable to fill the foriegn key post. To solve this problem we will pass "commit=False" in .save method, this will only create a model instance and not touch the data base yet and then set the post field manunally as the rendered post because the comments belong to that post which has been rendered
+
+            # Only creates a model instace
+            comment = comment_form.save(commit=False)
+
+            # Setting the foriegn key "post"
+            comment.post = rendered_post
+
+            # Calling the .save() method because we are using a model form
+            comment.save()
+
+            # we can use the slug as args because we have access to the slug since the request is made from the same post detail page
+            return HttpResponseRedirect(reverse("post-detail", args=[slug]))
+
+        # post = Blog.objects.get(slug=slug)
+        context = {
+            "post": rendered_post,
+            "post_tags": rendered_post.tags.all(),
+            "comment_form": comment_form
+        }
+        return render(request, "blog/post-detail.html", context)
