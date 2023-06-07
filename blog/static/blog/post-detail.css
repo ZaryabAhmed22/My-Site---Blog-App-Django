@@ -166,3 +166,39 @@ body {
   padding: 0.25rem 1.5rem;
   border-radius: 6px;
 }
+
+#comments{
+  margin: 3rem auto;
+  width: 90%;
+  max-width: 60rem;
+  border-radius: 12px;
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  padding: 1.25rem 1.75rem;
+}
+
+#comments ul{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#comments li{
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #ccc;
+}
+
+#comments li:last-of-type{
+  border-bottom: none;
+}
+
+#comments h2{
+  color: #6b6b6b;
+  font-size: 1.3rem;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+#comments p{
+  padding-top: 0;
+}
